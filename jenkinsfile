@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE_NAME = 'gsamrit/calculator:latest'
+        DOCKER_IMAGE_NAME = 'gsamrit/calculator2:latest'
         GITHUB_REPO_URL = 'https://github.com/gunjansamrit/Calculator2.git'
         DOCKER_CREDENTIAL_ID=credentials('DockerCredentialId')
         ANSIBLE_VERSION= 'ansible'
