@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE_NAME = 'gsamrit/calculator:latest'
+        GITHUB_REPO_URL = 'https://github.com/gunjansamrit/Calculator.git'
+        DOCKER_CREDENTIAL_ID=credentials('DockerCredentialId')
+        ANSIBLE_VERSION= 'ansible'
+        PATH = "/opt/homebrew/bin:$PATH"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+
+                    git branch: 'main', url: "${GITHUB_REPO_URL}"
+                }
+            }
+        }
+
+         stage('Test') {
+                    steps {
+                        script {
+                            // Execute Maven test command
+                           sh '/opt/homebrew/bin/mvn test'
+                        }
+                    }
+                }
+
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image
+                    docker.build(DOCKER_IMAGE_NAME, '.')
+                }
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                    sh "echo $DOCKER_CREDENTIAL_ID_PSW | docker login -u $DOCKER_CREDENTIAL_ID_USR --password-stdin"
+                    sh 'docker push ${DOCKER_IMAGE_NAME}'
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                script {
+                    ansiblePlaybook installation: 'ansible', playbook: 'deploy.yml', vaultTmpPath: ''
+                }
+            }
+        }
+    }
+}
