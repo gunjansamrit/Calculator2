@@ -8,6 +8,6 @@ RUN mvn clean install -X
 # Package Stage
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/Calculator-0.0.1-SNAPSHOT.jar /app/Calculator-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/miniproject-1.0-SNAPSHOT.jar /app/miniproject-1.0-SNAPSHOT.jar
 EXPOSE 8082
-CMD ["java", "-jar", "Calculator-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "miniproject-1.0-SNAPSHOT.jar"]
